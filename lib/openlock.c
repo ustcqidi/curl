@@ -84,8 +84,15 @@ CURLcode Curl_openlock(const char *file, struct openlock *o)
   return result;
 }
 
+/*
+ * Truncate the file at the current position, then unlock and close it.
+ */
 void Curl_openunlock(struct openlock *o)
 {
+#ifdef HAVE_FTRUNCATE
+  long pos = ftell(o->out);
+  ftruncate(o->fd, (off_t)pos);
+#endif
 #ifdef HAVE_LOCKF
   if(o->fd != -1) {
     if(lockf(o->fd, F_ULOCK, 0)) {
