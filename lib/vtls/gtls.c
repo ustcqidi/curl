@@ -562,10 +562,8 @@ gtls_connect_step1(struct Curl_easy *data,
     }
     case CURL_SSLVERSION_SSLv2:
     case CURL_SSLVERSION_SSLv3:
-      failf(data, "GnuTLS does not support SSLv2 or SSLv3");
-      return CURLE_SSL_CONNECT_ERROR;
     default:
-      failf(data, "Unrecognized parameter passed via CURLOPT_SSLVERSION");
+      failf(data, "GnuTLS does not support SSLv2 or SSLv3");
       return CURLE_SSL_CONNECT_ERROR;
   }
 
@@ -580,6 +578,7 @@ gtls_connect_step1(struct Curl_easy *data,
       return CURLE_OUT_OF_MEMORY;
     strcpy(prioritysrp, prioritylist);
     strcpy(prioritysrp + len, ":" GNUTLS_SRP);
+    infof(data, "GnuTLS priority: %s\n", prioritysrp);
 
     rc = gnutls_priority_set_direct(session, prioritysrp, &err);
     free(prioritysrp);
@@ -590,6 +589,7 @@ gtls_connect_step1(struct Curl_easy *data,
   }
   else {
 #endif
+    infof(data, "GnuTLS priority: %s\n", prioritylist);
     rc = gnutls_priority_set_direct(session, prioritylist, &err);
 #ifdef HAVE_GNUTLS_SRP
   }
