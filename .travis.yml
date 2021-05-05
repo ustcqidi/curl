@@ -72,7 +72,8 @@ jobs:
         <<: *common_apt
         packages:
         - cmake
-        # valgrind requires:
+        # valgrind requires libc6*:
+        - libc6
         - libc6-dbg
         - valgrind
         - libev-dev
